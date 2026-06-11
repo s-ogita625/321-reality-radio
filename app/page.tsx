@@ -36,7 +36,7 @@ export default function Home() {
         <div className="absolute left-[6%] bottom-40 w-16 h-16 rounded-full border-4 border-white/25 animate-floaty [animation-delay:1.5s]" />
         <RadioGlyph className="hidden sm:block absolute left-[4%] top-24 w-20 h-20 text-white/25 animate-floaty [animation-delay:0.8s]" />
 
-        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 pt-16 pb-0">
+        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 pt-14 sm:pt-16 pb-10 sm:pb-16">
           <div className="text-center reveal">
             <span className="pill bg-white/20 text-white text-xs px-4 py-2 backdrop-blur tracking-[0.2em] font-[family-name:var(--font-latin)]">
               {site.company}
@@ -68,7 +68,7 @@ export default function Home() {
           </div>
 
           {/* 4人のキャラクター（バナー再現） */}
-          <div className="mt-10 grid grid-cols-4 gap-1 sm:gap-4 items-end">
+          <div className="mt-8 sm:mt-10 grid grid-cols-4 gap-1 sm:gap-4 items-end">
             {members.map((m, i) => (
               <Link
                 key={m.slug}
@@ -91,10 +91,10 @@ export default function Home() {
                     priority={i < 2}
                   />
                 </div>
-                <span className="mt-1 text-[9px] sm:text-xs text-white/80 font-bold">
+                <span className="mt-1.5 text-[8px] sm:text-xs text-white/80 font-bold tracking-tight">
                   新パーソナリティ
                 </span>
-                <span className="text-xs sm:text-base font-[family-name:var(--font-rounded)] font-black text-white leading-tight text-center">
+                <span className="text-[11px] leading-tight sm:text-base font-[family-name:var(--font-rounded)] font-black text-white text-center break-keep">
                   {m.name}
                 </span>
               </Link>

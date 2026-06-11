@@ -18,7 +18,7 @@ export const site = {
   /** レギュラー放送枠の説明（トップに表示） */
   regularSlot: "毎週金曜 21:00 - 22:00",
   /** 配信プラットフォーム */
-  platform: "YouTube Live / REALITY",
+  platform: "REALITY",
   /** サイトの公開 URL（デプロイ後に書き換え） */
   url: "https://321-reality-radio.vercel.app",
 
