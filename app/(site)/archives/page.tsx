@@ -1,19 +1,12 @@
-import Image from "next/image";
-import { getArchives, getGuests } from "@/lib/content";
+import { getArchives } from "@/lib/content";
 import { PageHeader } from "@/components/PageHeader";
-import {
-  SectionTitle,
-  Thumb16x9,
-  HostStack,
-  GradButton,
-  formatDate,
-} from "@/components/ui";
+import { SectionTitle, Thumb16x9, HostStack, formatDate } from "@/components/ui";
 
-export const metadata = { title: "アーカイブ＆ゲスト" };
+export const metadata = { title: "アーカイブ" };
 export const revalidate = 60;
 
 export default async function ArchivesPage() {
-  const [archives, guests] = await Promise.all([getArchives(), getGuests()]);
+  const archives = await getArchives();
   // 日付降順（新しい回が先頭）
   const sortedArchives = [...archives].sort((a, b) =>
     b.date.localeCompare(a.date)
@@ -22,13 +15,13 @@ export default async function ArchivesPage() {
   return (
     <>
       <PageHeader
-        label="ARCHIVE & GUEST"
-        title="アーカイブ＆ゲスト"
-        description="過去放送のアーカイブと、これまでにご出演いただいたゲストの一覧。"
+        label="ARCHIVE"
+        title="アーカイブ"
+        description="過去放送のアーカイブ一覧。気になる回をいつでも見返せます。"
       />
 
       {/* ===================== 過去アーカイブ ===================== */}
-      <section className="mx-auto max-w-6xl px-4 sm:px-6 mt-16">
+      <section className="mx-auto max-w-6xl px-4 sm:px-6 mt-16 mb-24">
         <SectionTitle label="ARCHIVE" title="過去アーカイブ" />
 
         {sortedArchives.length > 0 ? (
@@ -78,89 +71,6 @@ export default async function ArchivesPage() {
           <div className="mt-8 rounded-3xl bg-white/70 border border-[var(--magenta)]/15 shadow-sm p-10 text-center">
             <p className="text-[var(--ink-soft)] text-sm">
               まだアーカイブがありません。放送終了後に順次公開予定です📻
-            </p>
-          </div>
-        )}
-      </section>
-
-      {/* ===================== 過去ゲスト ===================== */}
-      <section className="mx-auto max-w-6xl px-4 sm:px-6 mt-24 mb-24">
-        <SectionTitle label="GUEST" title="過去ゲスト" />
-
-        {guests.length > 0 ? (
-          <ul className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {guests.map((g) => (
-              <li
-                key={g.id}
-                className="rounded-3xl bg-white shadow-[var(--shadow-pop)] p-6 hover:-translate-y-1 transition-transform"
-              >
-                <div className="flex items-center gap-4">
-                  {g.avatar ? (
-                    <Image
-                      src={g.avatar}
-                      alt={g.name}
-                      width={56}
-                      height={56}
-                      className="w-14 h-14 rounded-full object-cover ring-2 ring-white shadow-sm"
-                    />
-                  ) : (
-                    <span
-                      className="grid place-items-center w-14 h-14 rounded-full bg-brand text-white ring-2 ring-white shadow-sm font-[family-name:var(--font-rounded)] font-black text-xl"
-                      aria-hidden
-                    >
-                      {[...g.name][0]}
-                    </span>
-                  )}
-                  <div className="min-w-0">
-                    <h3 className="font-[family-name:var(--font-rounded)] font-bold text-[var(--ink)] leading-tight truncate">
-                      {g.name}
-                    </h3>
-                    {g.role && (
-                      <span className="mt-1 inline-block pill bg-[var(--magenta)]/10 text-[var(--magenta)] text-[10px] px-2.5 py-1">
-                        {g.role}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {g.bio && (
-                  <p className="mt-4 text-sm text-[var(--ink-soft)] leading-relaxed">
-                    {g.bio}
-                  </p>
-                )}
-
-                {g.appearances.length > 0 && (
-                  <div className="mt-4">
-                    <p className="font-[family-name:var(--font-latin)] text-[10px] tracking-widest text-[var(--ink-soft)]">
-                      APPEARANCES
-                    </p>
-                    <div className="mt-1.5 flex flex-wrap gap-1.5">
-                      {g.appearances.map((ep) => (
-                        <span
-                          key={ep}
-                          className="pill bg-soft text-[var(--ink-soft)] text-[10px] px-2.5 py-1 font-bold"
-                        >
-                          {ep}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {g.link && (
-                  <div className="mt-5">
-                    <GradButton href={g.link} external variant="ghost">
-                      プロフィール →
-                    </GradButton>
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <div className="mt-8 rounded-3xl bg-white/70 border border-[var(--magenta)]/15 shadow-sm p-10 text-center">
-            <p className="text-[var(--ink-soft)] text-sm">
-              これまでにご出演いただいたゲストはまだいません。
             </p>
           </div>
         )}

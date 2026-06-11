@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getBroadcasts, getArchives, getSiteSettings, getMembers } from "@/lib/content";
+import { RECRUIT_URL } from "@/data/site";
 import { Headphones } from "@/components/Logo";
 import {
   SectionTitle,
@@ -241,7 +242,7 @@ export default async function Home() {
       </section>
 
       {/* ===================== お便り CTA ===================== */}
-      <section className="mx-auto max-w-6xl px-4 sm:px-6 mt-24">
+      <section id="otayori-cta" className="mx-auto max-w-6xl px-4 sm:px-6 mt-24 scroll-mt-20">
         <div className="relative rounded-[32px] bg-brand overflow-hidden p-8 sm:p-14 text-center text-white">
           <div className="absolute inset-0 halftone opacity-40" />
           <div className="relative">
@@ -265,11 +266,7 @@ export default async function Home() {
               <p className="text-white/90 text-sm sm:text-base mb-4">
                 REALITYでVライバーデビューしてみませんか？✨
               </p>
-              <GradButton
-                href="https://liff-gateway.lineml.jp/landing?follow=%40234pcbne&lp=jKK2xG&liff_id=2002363483-VqGOv5m2"
-                external
-                variant="ghost"
-              >
+              <GradButton href={RECRUIT_URL} external variant="ghost">
                 🎤 Vライバーになりたい方はこちら
               </GradButton>
             </div>

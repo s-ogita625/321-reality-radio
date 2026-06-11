@@ -4,15 +4,24 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Logo } from "./Logo";
+import { RECRUIT_URL } from "@/data/site";
 
 const NAV = [
   { href: "/", label: "トップ" },
   { href: "/schedule", label: "放送予定" },
-  { href: "/archives", label: "アーカイブ＆ゲスト" },
+  { href: "/archives", label: "アーカイブ" },
   { href: "/members", label: "MC紹介" },
 ];
 
-export function SiteNav() {
+type Social = { label: string; url: string };
+
+export function SiteNav({
+  mailFormUrl,
+  socials = [],
+}: {
+  mailFormUrl?: string;
+  socials?: Social[];
+}) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -30,6 +39,8 @@ export function SiteNav() {
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+  const close = () => setOpen(false);
 
   return (
     <header
@@ -88,7 +99,7 @@ export function SiteNav() {
       {/* モバイルメニュー */}
       <div
         className={`md:hidden overflow-hidden transition-all duration-300 ${
-          open ? "max-h-80" : "max-h-0"
+          open ? "max-h-[42rem]" : "max-h-0"
         }`}
       >
         <ul className="glass mx-4 mb-3 rounded-2xl p-2 flex flex-col gap-1">
@@ -106,6 +117,53 @@ export function SiteNav() {
               </Link>
             </li>
           ))}
+
+          {/* お便り / Vライバー */}
+          <li className="mt-1 pt-2 border-t border-[var(--ink-soft)]/15">
+            {mailFormUrl && (
+              <a
+                href={mailFormUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={close}
+                className="block px-4 py-3 rounded-xl font-bold text-[var(--ink)] hover:bg-white"
+              >
+                📮 お便り
+              </a>
+            )}
+            <a
+              href={RECRUIT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={close}
+              className="block px-4 py-3 rounded-xl font-bold text-[var(--magenta)] hover:bg-white"
+            >
+              🎤 Vライバーになりたい方
+            </a>
+          </li>
+
+          {/* 公式リンク */}
+          {socials.length > 0 && (
+            <li className="mt-1 pt-2 border-t border-[var(--ink-soft)]/15">
+              <span className="block px-4 pb-1 text-[11px] font-bold tracking-wider text-[var(--ink-soft)] font-[family-name:var(--font-latin)]">
+                公式リンク
+              </span>
+              <div className="grid grid-cols-2 gap-1">
+                {socials.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={close}
+                    className="block px-4 py-2.5 rounded-xl text-sm font-bold text-[var(--ink)] hover:bg-white"
+                  >
+                    {s.label}
+                  </a>
+                ))}
+              </div>
+            </li>
+          )}
         </ul>
       </div>
     </header>

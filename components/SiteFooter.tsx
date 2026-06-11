@@ -40,7 +40,7 @@ export async function SiteFooter() {
               </h3>
               <ul className="space-y-2 text-sm text-white/85">
                 <li><Link href="/schedule" className="hover:text-white">放送予定</Link></li>
-                <li><Link href="/archives" className="hover:text-white">アーカイブ＆ゲスト</Link></li>
+                <li><Link href="/archives" className="hover:text-white">アーカイブ</Link></li>
                 <li><Link href="/members" className="hover:text-white">MC紹介</Link></li>
               </ul>
             </nav>

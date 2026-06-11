@@ -33,3 +33,7 @@ export const site = {
   /** お便り投稿フォーム URL（任意。空文字なら非表示） */
   mailFormUrl: "https://forms.gle/",
 } as const;
+
+/** Vライバー募集の導線リンク（LINE LIFF） */
+export const RECRUIT_URL =
+  "https://liff-gateway.lineml.jp/landing?follow=%40234pcbne&lp=jKK2xG&liff_id=2002363483-VqGOv5m2";
