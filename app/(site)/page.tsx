@@ -93,7 +93,7 @@ export default async function Home() {
                   />
                 </div>
                 <span className="mt-1.5 text-[8px] sm:text-xs text-white/80 font-bold tracking-tight">
-                  新パーソナリティ
+                  パーソナリティ
                 </span>
                 <span className="text-[11px] leading-tight sm:text-base font-[family-name:var(--font-rounded)] font-black text-white text-center break-keep">
                   {m.name}

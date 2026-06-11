@@ -13,7 +13,7 @@ export default async function MembersPage() {
       <PageHeader
         label="PERSONALITY"
         title="MC紹介"
-        description="番組をお届けする4人の新パーソナリティ。"
+        description="番組をお届けする4人のパーソナリティ。"
       />
 
       <section className="mx-auto max-w-6xl px-4 sm:px-6 py-10 sm:py-14">
