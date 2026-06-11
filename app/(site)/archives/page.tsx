@@ -10,6 +10,7 @@ import {
 } from "@/components/ui";
 
 export const metadata = { title: "アーカイブ＆ゲスト" };
+export const revalidate = 60;
 
 export default async function ArchivesPage() {
   const [archives, guests] = await Promise.all([getArchives(), getGuests()]);

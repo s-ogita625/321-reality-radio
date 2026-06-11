@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Mochiy_Pop_One, Zen_Maru_Gothic, Zen_Kaku_Gothic_New, Outfit } from "next/font/google";
 import "./globals.css";
 import { site } from "@/data/site";
-import { SiteNav } from "@/components/SiteNav";
-import { SiteFooter } from "@/components/SiteFooter";
 
 // 見出し（丸ポップ） — バナーの「ラジオ」の雰囲気
 const display = Mochiy_Pop_One({
@@ -52,11 +50,7 @@ export default function RootLayout({
       lang="ja"
       className={`${display.variable} ${rounded.variable} ${sans.variable} ${latin.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[var(--cream)]">
-        <SiteNav />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
-      </body>
+      <body className="min-h-full bg-[var(--cream)]">{children}</body>
     </html>
   );
 }

@@ -1,5 +1,5 @@
 import "server-only";
-import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
+import { createPublicClient, isSupabaseConfigured } from "@/lib/supabase/public";
 import type { Broadcast, Archive, Guest } from "@/data/types";
 import { broadcasts as seedBroadcasts } from "@/data/schedule";
 import { archives as seedArchives } from "@/data/archives";
@@ -88,7 +88,7 @@ const seedSettings: SiteSettings = {
 export async function getBroadcasts(): Promise<Broadcast[]> {
   if (!isSupabaseConfigured()) return seedBroadcasts;
   try {
-    const sb = await createClient();
+    const sb = createPublicClient();
     const { data, error } = await sb.from("broadcasts").select("*").order("date", { ascending: true });
     if (error || !data) return seedBroadcasts;
     return data.map(rowToBroadcast);
@@ -100,7 +100,7 @@ export async function getBroadcasts(): Promise<Broadcast[]> {
 export async function getArchives(): Promise<Archive[]> {
   if (!isSupabaseConfigured()) return seedArchives;
   try {
-    const sb = await createClient();
+    const sb = createPublicClient();
     const { data, error } = await sb.from("archives").select("*").order("date", { ascending: false });
     if (error || !data) return seedArchives;
     return data.map(rowToArchive);
@@ -112,7 +112,7 @@ export async function getArchives(): Promise<Archive[]> {
 export async function getGuests(): Promise<Guest[]> {
   if (!isSupabaseConfigured()) return seedGuests;
   try {
-    const sb = await createClient();
+    const sb = createPublicClient();
     const { data, error } = await sb.from("guests").select("*").order("created_at", { ascending: true });
     if (error || !data) return seedGuests;
     return data.map(rowToGuest);
@@ -124,7 +124,7 @@ export async function getGuests(): Promise<Guest[]> {
 export async function getSiteSettings(): Promise<SiteSettings> {
   if (!isSupabaseConfigured()) return seedSettings;
   try {
-    const sb = await createClient();
+    const sb = createPublicClient();
     const { data, error } = await sb.from("site_settings").select("*").eq("id", 1).maybeSingle();
     if (error || !data) return seedSettings;
     return {

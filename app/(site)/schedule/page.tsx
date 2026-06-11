@@ -10,6 +10,7 @@ import {
 import { PageHeader } from "@/components/PageHeader";
 
 export const metadata = { title: "放送予定" };
+export const revalidate = 60;
 
 // upcoming/live を上に、ended を下に。各グループ内は日付昇順。
 function sortBroadcasts(list: Broadcast[]) {

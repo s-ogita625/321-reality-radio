@@ -12,6 +12,9 @@ import {
   formatDate,
 } from "@/components/ui";
 
+// Supabase の内容を反映（管理画面の保存時は即時、それ以外は60秒ごとに再検証）
+export const revalidate = 60;
+
 export default async function Home() {
   const [broadcasts, archives, site] = await Promise.all([
     getBroadcasts(),

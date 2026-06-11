@@ -6,6 +6,8 @@ import { members, getMember } from "@/data/members";
 import { getBroadcasts, getArchives } from "@/lib/content";
 import { GradButton, formatDate } from "@/components/ui";
 
+export const revalidate = 60;
+
 export function generateStaticParams() {
   return members.map((m) => ({ slug: m.slug }));
 }
