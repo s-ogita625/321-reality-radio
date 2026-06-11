@@ -12,16 +12,18 @@ export default async function AdminDashboard() {
   } = await sb.auth.getUser();
   if (!user) redirect("/admin/login");
 
-  const [bc, ar, gu] = await Promise.all([
+  const [bc, ar, gu, me] = await Promise.all([
     sb.from("broadcasts").select("id", { count: "exact", head: true }),
     sb.from("archives").select("id", { count: "exact", head: true }),
     sb.from("guests").select("id", { count: "exact", head: true }),
+    sb.from("members").select("slug", { count: "exact", head: true }),
   ]);
 
   const cards = [
     { href: "/admin/broadcasts", label: "放送予定", count: bc.count ?? 0, desc: "配信スケジュールの追加・編集・削除", icon: "📻" },
     { href: "/admin/archives", label: "アーカイブ", count: ar.count ?? 0, desc: "過去アーカイブの追加・編集・削除", icon: "▶" },
     { href: "/admin/guests", label: "ゲスト", count: gu.count ?? 0, desc: "過去ゲストの追加・編集・削除", icon: "🎤" },
+    { href: "/admin/members", label: "MC紹介", count: me.count ?? 0, desc: "パーソナリティの追加・編集・削除", icon: "🎙" },
     { href: "/admin/settings", label: "リンク・設定", count: null, desc: "SNS・お便りフォーム等の各種リンク", icon: "🔗" },
   ];
 

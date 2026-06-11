@@ -1,11 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
-import { members } from "@/data/members";
+import { getMembers } from "@/lib/content";
 import { PageHeader } from "@/components/PageHeader";
 
 export const metadata = { title: "MC紹介" };
+export const revalidate = 60;
 
-export default function MembersPage() {
+export default async function MembersPage() {
+  const members = await getMembers();
   return (
     <>
       <PageHeader

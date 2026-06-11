@@ -1,9 +1,11 @@
 import "server-only";
+import { cache } from "react";
 import { createPublicClient, isSupabaseConfigured } from "@/lib/supabase/public";
-import type { Broadcast, Archive, Guest } from "@/data/types";
+import type { Broadcast, Archive, Guest, Member } from "@/data/types";
 import { broadcasts as seedBroadcasts } from "@/data/schedule";
 import { archives as seedArchives } from "@/data/archives";
 import { guests as seedGuests } from "@/data/guests";
+import { members as seedMembers } from "@/data/members";
 import { site as seedSite } from "@/data/site";
 
 // =============================================================
@@ -44,6 +46,23 @@ function rowToArchive(r: Row): Archive {
     guests: (r.guests as string[]) ?? [],
     summary: (r.summary as string) ?? undefined,
     duration: (r.duration as string) ?? undefined,
+  };
+}
+
+function rowToMember(r: Row): Member {
+  const arr = (v: unknown) => (Array.isArray(v) ? v : []);
+  return {
+    slug: String(r.slug),
+    name: (r.name as string) ?? "",
+    kana: (r.kana as string) ?? "",
+    romaji: (r.romaji as string) ?? "",
+    color: (r.color as string) ?? "#9a63e6",
+    colorSub: (r.color_sub as string) ?? "#ff7ec2",
+    catch: (r.catch as string) ?? "",
+    image: (r.image as string) ?? "",
+    bio: (r.bio as string) ?? "",
+    profile: arr(r.profile) as { label: string; value: string }[],
+    links: arr(r.links) as { label: string; url: string }[],
   };
 }
 
@@ -119,6 +138,23 @@ export async function getGuests(): Promise<Guest[]> {
   } catch {
     return seedGuests;
   }
+}
+
+// cache() で同一リクエスト内の複数呼び出しを1回のクエリに集約（MemberChip等のN+1防止）
+export const getMembers = cache(async (): Promise<Member[]> => {
+  if (!isSupabaseConfigured()) return seedMembers;
+  try {
+    const sb = createPublicClient();
+    const { data, error } = await sb.from("members").select("*").order("sort_order", { ascending: true });
+    if (error || !data || data.length === 0) return seedMembers;
+    return data.map(rowToMember);
+  } catch {
+    return seedMembers;
+  }
+});
+
+export async function getMemberBySlug(slug: string): Promise<Member | undefined> {
+  return (await getMembers()).find((m) => m.slug === slug);
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {

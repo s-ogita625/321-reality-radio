@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { getMember } from "@/data/members";
+import { getMemberBySlug } from "@/lib/content";
 
 /** セクション見出し（小ラベル＋大見出し） */
 export function SectionTitle({
@@ -85,7 +85,7 @@ export function Thumb16x9({
 }
 
 /** MC のミニアバター（丸・テーマカラー枠）。slug を渡す */
-export function MemberChip({
+export async function MemberChip({
   slug,
   size = 36,
   withName = false,
@@ -94,7 +94,7 @@ export function MemberChip({
   size?: number;
   withName?: boolean;
 }) {
-  const m = getMember(slug);
+  const m = await getMemberBySlug(slug);
   if (!m) return null;
   return (
     <Link

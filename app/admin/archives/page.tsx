@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
-import { getArchives } from "@/lib/content";
-import { members } from "@/data/members";
-import type { Archive } from "@/data/types";
+import { getArchives, getMembers } from "@/lib/content";
+import type { Archive, Member } from "@/data/types";
 import { AdminShell, FlashMessage } from "@/components/admin/AdminShell";
 import {
   Card,
@@ -13,10 +12,9 @@ import {
   SectionHeading,
 } from "@/components/admin/fields";
 import { saveArchive, deleteArchive } from "@/app/admin/actions";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 
-const slugHint = `MCの slug: ${members.map((m) => `${m.slug}(${m.name})`).join(" / ")}`;
-
-function ArchiveForm({ a }: { a?: Archive }) {
+function ArchiveForm({ a, slugHint }: { a?: Archive; slugHint: string }) {
   return (
     <form action={saveArchive} className="space-y-3">
       {a && <input type="hidden" name="id" value={a.id} />}
@@ -37,9 +35,15 @@ function ArchiveForm({ a }: { a?: Archive }) {
       <Field label="アーカイブURL" required hint="YouTube など">
         <input name="url" defaultValue={a?.url} required className={inputClass} placeholder="https://youtube.com/..." />
       </Field>
-      <Field label="サムネイル(16:9)パス" required hint="例: /thumbnails/ep-013.jpg">
-        <input name="thumbnail" defaultValue={a?.thumbnail} required className={inputClass} placeholder="/thumbnails/..." />
-      </Field>
+      <ImageUpload
+        name="thumbnail"
+        defaultValue={a?.thumbnail ?? ""}
+        folder="thumbnails"
+        label="サムネイル（16:9）"
+        hint="画像をアップロード（必須）"
+        required
+        aspect="video"
+      />
       <Field label="出演MC" hint={slugHint}>
         <input name="hosts" defaultValue={a?.hosts.join(", ")} className={inputClass} placeholder="riu, kurumi" />
       </Field>
@@ -69,7 +73,9 @@ export default async function AdminArchives({
   if (!user) redirect("/admin/login");
 
   const sp = await searchParams;
-  const list = [...(await getArchives())].sort((a, b) => b.date.localeCompare(a.date));
+  const [alist, mem] = await Promise.all([getArchives(), getMembers()]);
+  const list = [...alist].sort((a, b) => b.date.localeCompare(a.date));
+  const slugHint = `MCの slug: ${mem.map((m: Member) => `${m.slug}(${m.name})`).join(" / ")}`;
   const movedItem = sp.moved ? list.find((a) => a.id === sp.moved) : undefined;
 
   return (
@@ -85,7 +91,7 @@ export default async function AdminArchives({
 
       <Card className="mb-8">
         <h2 className="font-bold text-[var(--ink)] mb-4">＋ 新しいアーカイブを追加</h2>
-        <ArchiveForm />
+        <ArchiveForm slugHint={slugHint} />
       </Card>
 
       <h2 className="font-bold text-[var(--ink)] mb-3">登録済み（{list.length}件）</h2>
@@ -107,7 +113,7 @@ export default async function AdminArchives({
               <span className="text-xs text-[var(--ink-soft)]">編集 ▼</span>
             </summary>
             <div className="px-5 pb-5 pt-1 border-t border-[var(--ink-soft)]/10">
-              <ArchiveForm a={a} />
+              <ArchiveForm a={a} slugHint={slugHint} />
               <form action={deleteArchive} className="mt-3">
                 <input type="hidden" name="id" value={a.id} />
                 <DangerButton>このアーカイブを削除</DangerButton>

@@ -2,13 +2,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { members, getMember } from "@/data/members";
-import { getBroadcasts, getArchives } from "@/lib/content";
+import { getBroadcasts, getArchives, getMembers } from "@/lib/content";
 import { GradButton, formatDate } from "@/components/ui";
 
 export const revalidate = 60;
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const members = await getMembers();
   return members.map((m) => ({ slug: m.slug }));
 }
 
@@ -18,7 +18,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const m = getMember(slug);
+  const m = (await getMembers()).find((x) => x.slug === slug);
   if (!m) return { title: "MC紹介" };
   return { title: m.name };
 }
@@ -29,7 +29,8 @@ export default async function MemberPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const m = getMember(slug);
+  const members = await getMembers();
+  const m = members.find((x) => x.slug === slug);
   if (!m) notFound();
 
   // 出演回を抽出

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { members } from "@/data/members";
-import { getBroadcasts, getArchives, getSiteSettings } from "@/lib/content";
+import { getBroadcasts, getArchives, getSiteSettings, getMembers } from "@/lib/content";
 import { Headphones } from "@/components/Logo";
 import {
   SectionTitle,
@@ -16,10 +15,11 @@ import {
 export const revalidate = 60;
 
 export default async function Home() {
-  const [broadcasts, archives, site] = await Promise.all([
+  const [broadcasts, archives, site, members] = await Promise.all([
     getBroadcasts(),
     getArchives(),
     getSiteSettings(),
+    getMembers(),
   ]);
   // 直近の放送予定（upcoming/live のうち日付が一番近いもの）
   const next = [...broadcasts]

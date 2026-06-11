@@ -202,6 +202,54 @@ export async function saveSettings(formData: FormData) {
   redirect("/admin/settings?saved=1");
 }
 
+// ====================== MC（パーソナリティ） ======================
+
+/** "ラベル|値" の複数行を {label,value} 配列に */
+function parsePairs(v: FormDataEntryValue | null, key: "value" | "url") {
+  return String(v ?? "")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const [label, ...rest] = line.split("|");
+      return { label: (label ?? "").trim(), [key]: rest.join("|").trim() };
+    })
+    .filter((o) => o.label && (o as Record<string, string>)[key]);
+}
+
+export async function saveMember(formData: FormData) {
+  const sb = await createClient();
+  const slug = str(formData.get("slug"));
+  if (!slug) throw new Error("slug（英小文字のID）は必須です。");
+  const row = {
+    slug,
+    name: str(formData.get("name")),
+    kana: str(formData.get("kana")),
+    romaji: str(formData.get("romaji")),
+    color: str(formData.get("color")) || "#9a63e6",
+    color_sub: str(formData.get("color_sub")) || "#ff7ec2",
+    catch: str(formData.get("catch")),
+    image: str(formData.get("image")),
+    bio: str(formData.get("bio")),
+    profile: parsePairs(formData.get("profile"), "value"),
+    links: parsePairs(formData.get("links"), "url"),
+    sort_order: Number(str(formData.get("sort_order"))) || 0,
+  };
+  const { error } = await sb.from("members").upsert(row);
+  if (error) throw new Error(error.message);
+  revalidateAll();
+  redirect("/admin/members?saved=1");
+}
+
+export async function deleteMember(formData: FormData) {
+  const sb = await createClient();
+  const slug = str(formData.get("slug"));
+  const { error } = await sb.from("members").delete().eq("slug", slug);
+  if (error) throw new Error(error.message);
+  revalidateAll();
+  redirect("/admin/members?deleted=1");
+}
+
 // ====================== 認証 ======================
 
 export async function signOut() {

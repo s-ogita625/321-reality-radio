@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
-import { getBroadcasts } from "@/lib/content";
-import { members } from "@/data/members";
-import type { Broadcast } from "@/data/types";
+import { getBroadcasts, getMembers } from "@/lib/content";
+import type { Broadcast, Member } from "@/data/types";
 import { AdminShell, FlashMessage } from "@/components/admin/AdminShell";
 import {
   Card,
@@ -13,10 +12,9 @@ import {
   SectionHeading,
 } from "@/components/admin/fields";
 import { saveBroadcast, deleteBroadcast, archiveBroadcast } from "@/app/admin/actions";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 
-const slugHint = `MCの slug: ${members.map((m) => `${m.slug}(${m.name})`).join(" / ")}`;
-
-function BroadcastForm({ b }: { b?: Broadcast }) {
+function BroadcastForm({ b, slugHint }: { b?: Broadcast; slugHint: string }) {
   return (
     <form action={saveBroadcast} className="space-y-3">
       {b && <input type="hidden" name="id" value={b.id} />}
@@ -60,9 +58,14 @@ function BroadcastForm({ b }: { b?: Broadcast }) {
       <Field label="ゲスト" hint="カンマ区切り（任意）">
         <input name="guests" defaultValue={b?.guests?.join(", ")} className={inputClass} />
       </Field>
-      <Field label="サムネイル(16:9)パス" hint="例: /thumbnails/ep-004.jpg（任意）">
-        <input name="thumbnail" defaultValue={b?.thumbnail} className={inputClass} placeholder="/thumbnails/..." />
-      </Field>
+      <ImageUpload
+        name="thumbnail"
+        defaultValue={b?.thumbnail ?? ""}
+        folder="thumbnails"
+        label="サムネイル（16:9）"
+        hint="画像をアップロード（任意）"
+        aspect="video"
+      />
       <Field label="概要">
         <textarea name="description" defaultValue={b?.description} rows={2} className={inputClass} />
       </Field>
@@ -86,7 +89,9 @@ export default async function AdminBroadcasts({
   if (!user) redirect("/admin/login");
 
   const sp = await searchParams;
-  const list = [...(await getBroadcasts())].sort((a, b) => a.date.localeCompare(b.date));
+  const [blist, mem] = await Promise.all([getBroadcasts(), getMembers()]);
+  const list = [...blist].sort((a, b) => a.date.localeCompare(b.date));
+  const slugHint = `MCの slug: ${mem.map((m: Member) => `${m.slug}(${m.name})`).join(" / ")}`;
 
   return (
     <AdminShell active="/admin/broadcasts" email={user.email ?? undefined}>
@@ -95,7 +100,7 @@ export default async function AdminBroadcasts({
 
       <Card className="mb-8">
         <h2 className="font-bold text-[var(--ink)] mb-4">＋ 新しい放送予定を追加</h2>
-        <BroadcastForm />
+        <BroadcastForm slugHint={slugHint} />
       </Card>
 
       <h2 className="font-bold text-[var(--ink)] mb-3">
@@ -118,7 +123,7 @@ export default async function AdminBroadcasts({
               <span className="text-xs text-[var(--ink-soft)]">編集 ▼</span>
             </summary>
             <div className="px-5 pb-5 pt-1 border-t border-[var(--ink-soft)]/10">
-              <BroadcastForm b={b} />
+              <BroadcastForm b={b} slugHint={slugHint} />
               <div className="mt-4 pt-4 border-t border-dashed border-[var(--ink-soft)]/20 flex flex-wrap items-center gap-3">
                 <form action={archiveBroadcast}>
                   <input type="hidden" name="id" value={b.id} />
