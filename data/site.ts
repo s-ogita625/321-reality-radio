@@ -10,9 +10,9 @@ export const site = {
   nameEn: "321 REALITY RADIO",
   /** キャッチコピー */
   tagline: "REALITYから、リアルな声を。",
-  /** 番組概要 */
+  /** 番組概要（改行位置「\n」で表示が折り返されます） */
   description:
-    "321 inc. 所属ライバーがお届けする公式ラジオ番組『321 REALITY ラジオ』。毎週金曜よる21時、トーク・お便り・ゲストコーナーでREALITYのリアルをお届けします。",
+    "321 inc. 所属ライバーがお届けする\n公式ラジオ番組『321 REALITY ラジオ』\n毎週金曜21時〜トーク・お便り・ゲストコーナーで\n321REALITYライバーを紹介します。",
   /** 運営 */
   company: "321 inc. — LIVER MANAGEMENT",
   /** レギュラー放送枠の説明（トップに表示） */

@@ -4,12 +4,11 @@ import { loadDefaultJapaneseParser } from "budoux";
 const parser = loadDefaultJapaneseParser();
 
 /**
- * 日本語を文節単位で改行する。
- * BudouX で文節に分割し、境界に <wbr>（改行候補）を挿入。
- * word-break:keep-all と組み合わせることで、文節の途中では改行されず
- * 読みやすい位置でのみ折り返す（iOS Safari 等も含め全ブラウザ対応）。
- *
- * 改行(\n\n)を含む文章は段落ごとに分けて描画。
+ * 日本語を読みやすく改行する。
+ * - 文中の改行「\n」は強制改行(<br>)として扱い、指定どおりの行で表示（スマホ/PC統一）。
+ * - 空行(\n\n)は段落間のスペースになる。
+ * - 各行の中は BudouX で文節に分割し <wbr> を挿入。word-break:keep-all と
+ *   組み合わせ、行が幅に収まらない場合のみ文節境界で折り返す（語の途中で切れない）。
  */
 export function JpText({
   text,
@@ -20,19 +19,14 @@ export function JpText({
   className?: string;
   as?: "p" | "span" | "div";
 }) {
-  const paragraphs = text.split(/\n\n+/);
+  const lines = text.split("\n");
   return (
     <Tag className={className} style={{ wordBreak: "keep-all", overflowWrap: "anywhere" }}>
-      {paragraphs.map((para, pi) => {
-        const phrases = parser.parse(para);
+      {lines.map((line, li) => {
+        const phrases = line ? parser.parse(line) : [];
         return (
-          <Fragment key={pi}>
-            {pi > 0 && (
-              <>
-                <br />
-                <br />
-              </>
-            )}
+          <Fragment key={li}>
+            {li > 0 && <br />}
             {phrases.map((phrase, i) => (
               <Fragment key={i}>
                 {phrase}

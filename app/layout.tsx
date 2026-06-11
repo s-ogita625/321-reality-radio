@@ -33,10 +33,10 @@ export const metadata: Metadata = {
     default: `${site.name} 公式サイト`,
     template: `%s ｜ ${site.name}`,
   },
-  description: site.description,
+  description: site.description.replace(/\n/g, " "),
   openGraph: {
     title: `${site.name} 公式サイト`,
-    description: site.description,
+    description: site.description.replace(/\n/g, " "),
     type: "website",
     locale: "ja_JP",
   },
