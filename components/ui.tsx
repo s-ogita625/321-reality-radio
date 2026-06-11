@@ -165,10 +165,14 @@ export function GradButton({
   return <Link href={href}>{inner}</Link>;
 }
 
-/** 日付を「2026.01.30 (金)」形式に整形 */
+/** 日付を「2026.01.30 (金)」形式に整形（タイムゾーン非依存） */
 export function formatDate(iso: string) {
-  const d = new Date(iso + "T00:00:00+09:00");
-  const w = ["日", "月", "火", "水", "木", "金", "土"][d.getDay()];
+  // "YYYY-MM-DD" の年月日をそのまま使用（サーバーのTZによる日付ズレを防ぐ）
+  const [y, m, day] = iso.split("-").map(Number);
+  // 曜日は UTC 基準で算出（実行環境のTZに左右されない）
+  const w = ["日", "月", "火", "水", "木", "金", "土"][
+    new Date(Date.UTC(y, m - 1, day)).getUTCDay()
+  ];
   const p = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())} (${w})`;
+  return `${y}.${p(m)}.${p(day)} (${w})`;
 }
