@@ -1,9 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { site } from "@/data/site";
 import { members } from "@/data/members";
-import { broadcasts } from "@/data/schedule";
-import { archives } from "@/data/archives";
+import { getBroadcasts, getArchives, getSiteSettings } from "@/lib/content";
 import { Headphones } from "@/components/Logo";
 import {
   SectionTitle,
@@ -14,16 +12,16 @@ import {
   formatDate,
 } from "@/components/ui";
 
-// 直近の放送予定（upcoming のうち日付が一番近いもの）
-function nextBroadcast() {
-  const up = broadcasts
+export default async function Home() {
+  const [broadcasts, archives, site] = await Promise.all([
+    getBroadcasts(),
+    getArchives(),
+    getSiteSettings(),
+  ]);
+  // 直近の放送予定（upcoming/live のうち日付が一番近いもの）
+  const next = [...broadcasts]
     .filter((b) => b.status !== "ended")
-    .sort((a, b) => a.date.localeCompare(b.date));
-  return up[0];
-}
-
-export default function Home() {
-  const next = nextBroadcast();
+    .sort((a, b) => a.date.localeCompare(b.date))[0];
   const latest = archives.slice(0, 3);
 
   return (

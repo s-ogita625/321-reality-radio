@@ -1,4 +1,4 @@
-import { broadcasts } from "@/data/schedule";
+import { getBroadcasts } from "@/lib/content";
 import type { Broadcast } from "@/data/types";
 import {
   StatusBadge,
@@ -19,8 +19,8 @@ function sortBroadcasts(list: Broadcast[]) {
   );
 }
 
-export default function SchedulePage() {
-  const sorted = sortBroadcasts(broadcasts);
+export default async function SchedulePage() {
+  const sorted = sortBroadcasts(await getBroadcasts());
 
   return (
     <>

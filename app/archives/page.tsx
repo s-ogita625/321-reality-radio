@@ -1,6 +1,5 @@
 import Image from "next/image";
-import { archives } from "@/data/archives";
-import { guests } from "@/data/guests";
+import { getArchives, getGuests } from "@/lib/content";
 import { PageHeader } from "@/components/PageHeader";
 import {
   SectionTitle,
@@ -12,7 +11,8 @@ import {
 
 export const metadata = { title: "アーカイブ＆ゲスト" };
 
-export default function ArchivesPage() {
+export default async function ArchivesPage() {
+  const [archives, guests] = await Promise.all([getArchives(), getGuests()]);
   // 日付降順（新しい回が先頭）
   const sortedArchives = [...archives].sort((a, b) =>
     b.date.localeCompare(a.date)

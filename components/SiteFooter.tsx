@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { site } from "@/data/site";
+import { getSiteSettings } from "@/lib/content";
 import { Logo, Headphones } from "./Logo";
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const site = await getSiteSettings();
   return (
     <footer className="relative mt-24 bg-brand text-white overflow-hidden">
       <div className="absolute inset-0 halftone opacity-40" />

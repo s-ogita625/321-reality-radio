@@ -3,8 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { members, getMember } from "@/data/members";
-import { broadcasts } from "@/data/schedule";
-import { archives } from "@/data/archives";
+import { getBroadcasts, getArchives } from "@/lib/content";
 import { GradButton, formatDate } from "@/components/ui";
 
 export function generateStaticParams() {
@@ -32,8 +31,12 @@ export default async function MemberPage({
   if (!m) notFound();
 
   // 出演回を抽出
-  const upcoming = broadcasts.filter((b) => b.hosts.includes(m.slug));
-  const pastArchives = archives.filter((a) => a.hosts.includes(m.slug));
+  const [allBroadcasts, allArchives] = await Promise.all([
+    getBroadcasts(),
+    getArchives(),
+  ]);
+  const upcoming = allBroadcasts.filter((b) => b.hosts.includes(m.slug));
+  const pastArchives = allArchives.filter((a) => a.hosts.includes(m.slug));
 
   // 他のMCへの導線（前後 + 残りのアバター）
   const idx = members.findIndex((x) => x.slug === m.slug);

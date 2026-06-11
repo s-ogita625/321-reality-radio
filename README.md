@@ -61,6 +61,32 @@ MCのキャラクター画像は `public/members/<slug>.png` に置いていま�
 
 ---
 
+## 🔐 管理画面（Supabase連携）
+
+`/admin` に、放送予定・アーカイブ・ゲストの **追加／編集／削除** と
+**各種リンク設定** ができる管理画面があります。データは Supabase に保存され、
+保存すると公開サイトに即反映されます（コードのcommit不要）。
+
+> Supabase の環境変数が未設定の間は、公開サイトは `data/` の静的データで動作し、
+> `/admin` は「セットアップが必要です」と表示します（無停止）。
+
+### セットアップ手順（初回のみ）
+1. [supabase.com](https://supabase.com) で無料プロジェクトを作成
+2. ダッシュボードの **SQL Editor** で [`supabase/schema.sql`](supabase/schema.sql) を実行（テーブル＋権限）。
+   サンプルデータも入れる場合は続けて [`supabase/seed.sql`](supabase/seed.sql) を実行。
+3. **Project Settings → API** から以下を取得し、環境変数に設定:
+   - `NEXT_PUBLIC_SUPABASE_URL`（Project URL）
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`（publishable / anon key。公開可）
+   - ローカル: `.env.local` に記載（[`.env.local.example`](.env.local.example) 参照）
+   - 本番: Vercel → Settings → Environment Variables に追加して再デプロイ
+4. **Authentication → Users** で管理者アカウント（メール＋パスワード）を発行
+5. `/admin/login` からログイン
+
+### 仕組み・セキュリティ
+- 公開サイト＝読み取りのみ（anonキー）。書き込みはログイン済みユーザーだけ（RLSで制御）。
+- `service_role` キーは使用しません（ブラウザに秘密鍵を出しません）。
+- セッションは `proxy.ts`（Next.js 16）でリフレッシュし、未ログインの `/admin` はログインへ誘導。
+
 ## 🚀 開発・デプロイ
 
 ```bash
