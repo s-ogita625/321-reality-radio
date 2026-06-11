@@ -12,7 +12,7 @@ import {
   DangerButton,
   SectionHeading,
 } from "@/components/admin/fields";
-import { saveBroadcast, deleteBroadcast } from "@/app/admin/actions";
+import { saveBroadcast, deleteBroadcast, archiveBroadcast } from "@/app/admin/actions";
 
 const slugHint = `MCの slug: ${members.map((m) => `${m.slug}(${m.name})`).join(" / ")}`;
 
@@ -119,10 +119,21 @@ export default async function AdminBroadcasts({
             </summary>
             <div className="px-5 pb-5 pt-1 border-t border-[var(--ink-soft)]/10">
               <BroadcastForm b={b} />
-              <form action={deleteBroadcast} className="mt-3">
-                <input type="hidden" name="id" value={b.id} />
-                <DangerButton>この放送予定を削除</DangerButton>
-              </form>
+              <div className="mt-4 pt-4 border-t border-dashed border-[var(--ink-soft)]/20 flex flex-wrap items-center gap-3">
+                <form action={archiveBroadcast}>
+                  <input type="hidden" name="id" value={b.id} />
+                  <button className="pill bg-[var(--magenta)]/10 text-[var(--magenta)] border border-[var(--magenta)]/30 px-4 py-2 text-xs font-bold hover:bg-[var(--magenta)]/20 transition">
+                    ▶ アーカイブへ移行
+                  </button>
+                </form>
+                <span className="text-[11px] text-[var(--ink-soft)]">
+                  放送終了後に押すと、この内容がアーカイブへ移動します（移行後にアーカイブURLを設定できます）。
+                </span>
+                <form action={deleteBroadcast} className="ml-auto">
+                  <input type="hidden" name="id" value={b.id} />
+                  <DangerButton>削除</DangerButton>
+                </form>
+              </div>
             </div>
           </details>
         ))}

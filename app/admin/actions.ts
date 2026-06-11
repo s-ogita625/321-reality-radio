@@ -68,6 +68,46 @@ export async function deleteBroadcast(formData: FormData) {
   redirect("/admin/broadcasts?deleted=1");
 }
 
+/**
+ * 放送予定をアーカイブへ移行する。
+ * 放送予定の内容（回・日付・タイトル・出演者・ゲスト・サムネ・概要）を
+ * そのままアーカイブへコピーし、放送予定からは削除する。
+ * 視聴URLはアーカイブURLの初期値として引き継ぎ（移行後に編集可能）。
+ */
+export async function archiveBroadcast(formData: FormData) {
+  const sb = await createClient();
+  const id = str(formData.get("id"));
+  const { data: b, error: e1 } = await sb
+    .from("broadcasts")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (e1) throw new Error(e1.message);
+  if (!b) throw new Error("対象の放送予定が見つかりませんでした。");
+
+  const archiveRow = {
+    id: b.id,
+    episode: b.episode ?? "",
+    date: b.date,
+    title: b.title,
+    thumbnail: b.thumbnail ?? "",
+    url: b.url ?? "", // アーカイブURLの初期値（移行後に設定）
+    hosts: b.hosts ?? [],
+    guests: b.guests ?? [],
+    summary: b.description ?? null,
+    duration: null,
+  };
+  const { error: e2 } = await sb.from("archives").upsert(archiveRow);
+  if (e2) throw new Error(e2.message);
+
+  const { error: e3 } = await sb.from("broadcasts").delete().eq("id", id);
+  if (e3) throw new Error(e3.message);
+
+  revalidateAll();
+  // 移行先アーカイブを自動で開いて URL を設定してもらう
+  redirect(`/admin/archives?moved=${encodeURIComponent(id)}`);
+}
+
 // ====================== アーカイブ ======================
 
 export async function saveArchive(formData: FormData) {

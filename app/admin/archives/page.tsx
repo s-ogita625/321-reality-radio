@@ -59,7 +59,7 @@ function ArchiveForm({ a }: { a?: Archive }) {
 export default async function AdminArchives({
   searchParams,
 }: {
-  searchParams: Promise<{ saved?: string; deleted?: string }>;
+  searchParams: Promise<{ saved?: string; deleted?: string; moved?: string }>;
 }) {
   if (!isSupabaseConfigured()) return null;
   const sb = await createClient();
@@ -70,11 +70,18 @@ export default async function AdminArchives({
 
   const sp = await searchParams;
   const list = [...(await getArchives())].sort((a, b) => b.date.localeCompare(a.date));
+  const movedItem = sp.moved ? list.find((a) => a.id === sp.moved) : undefined;
 
   return (
     <AdminShell active="/admin/archives" email={user.email ?? undefined}>
       <SectionHeading title="アーカイブ" desc="過去アーカイブの追加・編集・削除ができます。" />
       <FlashMessage saved={!!sp.saved} deleted={!!sp.deleted} />
+      {movedItem && (
+        <div className="mb-5 rounded-xl bg-[var(--magenta)]/10 border border-[var(--magenta)]/30 text-[var(--magenta)] px-4 py-3 text-sm font-bold">
+          ▶「{movedItem.episode || movedItem.title}」を放送予定からアーカイブへ移行しました。
+          下で<strong>アーカイブURL</strong>を入力して「更新する」を押してください。
+        </div>
+      )}
 
       <Card className="mb-8">
         <h2 className="font-bold text-[var(--ink)] mb-4">＋ 新しいアーカイブを追加</h2>
@@ -84,7 +91,13 @@ export default async function AdminArchives({
       <h2 className="font-bold text-[var(--ink)] mb-3">登録済み（{list.length}件）</h2>
       <div className="space-y-3">
         {list.map((a) => (
-          <details key={a.id} className="rounded-2xl bg-white shadow-[var(--shadow-pop)] overflow-hidden">
+          <details
+            key={a.id}
+            open={a.id === sp.moved}
+            className={`rounded-2xl bg-white shadow-[var(--shadow-pop)] overflow-hidden ${
+              a.id === sp.moved ? "ring-2 ring-[var(--magenta)]" : ""
+            }`}
+          >
             <summary className="cursor-pointer px-5 py-4 flex items-center gap-3 list-none">
               <span className="text-xs text-[var(--ink-soft)] font-bold tabular-nums">{a.date}</span>
               <span className="flex-1 text-sm font-bold text-[var(--ink)] truncate">
