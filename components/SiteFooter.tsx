@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getSiteSettings } from "@/lib/content";
 import { Logo, Headphones } from "./Logo";
+import { JpText } from "./JpText";
 
 export async function SiteFooter() {
   const site = await getSiteSettings();
@@ -25,9 +26,10 @@ export async function SiteFooter() {
                 </span>
               </span>
             </div>
-            <p className="mt-4 text-sm text-white/85 leading-relaxed">
-              {site.description}
-            </p>
+            <JpText
+              text={site.description}
+              className="mt-4 text-sm text-white/85 leading-relaxed"
+            />
             <p className="mt-4 text-xs text-white/70 font-[family-name:var(--font-latin)] tracking-wider">
               {site.regularSlot}
             </p>

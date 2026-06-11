@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getBroadcasts, getArchives, getMembers } from "@/lib/content";
 import { GradButton, formatDate } from "@/components/ui";
+import { JpText } from "@/components/JpText";
 
 export const revalidate = 60;
 
@@ -123,12 +124,11 @@ export default async function MemberPage({
               </h2>
               <div className="mt-5 space-y-4">
                 {bioParagraphs.map((p, i) => (
-                  <p
+                  <JpText
                     key={i}
+                    text={p}
                     className="text-[var(--ink)] leading-relaxed text-sm sm:text-base"
-                  >
-                    {p}
-                  </p>
+                  />
                 ))}
               </div>
 

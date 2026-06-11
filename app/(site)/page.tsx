@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getBroadcasts, getArchives, getSiteSettings, getMembers } from "@/lib/content";
 import { RECRUIT_URL } from "@/data/site";
+import { JpText } from "@/components/JpText";
 import { Headphones } from "@/components/Logo";
 import {
   SectionTitle,
@@ -137,9 +138,10 @@ export default async function Home() {
                   {next.title}
                 </h3>
                 {next.description && (
-                  <p className="mt-2 text-sm text-[var(--ink-soft)] leading-relaxed">
-                    {next.description}
-                  </p>
+                  <JpText
+                    text={next.description}
+                    className="mt-2 text-sm text-[var(--ink-soft)] leading-relaxed"
+                  />
                 )}
                 <div className="mt-4 flex items-center justify-between gap-3 flex-wrap">
                   <HostStack slugs={next.hosts} />
@@ -249,10 +251,10 @@ export default async function Home() {
             <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl">
               お便り募集中📮
             </h2>
-            <p className="mt-3 text-white/90 max-w-lg mx-auto text-sm sm:text-base">
-              番組への質問・お悩み相談・リクエストをお待ちしています。
-              あなたのメッセージが番組で読まれるかも？
-            </p>
+            <JpText
+              text="番組への質問・お悩み相談・リクエストをお待ちしています。あなたのメッセージが番組で読まれるかも？"
+              className="mt-3 text-white/90 max-w-lg mx-auto text-sm sm:text-base"
+            />
             {site.mailFormUrl && (
               <div className="mt-6">
                 <GradButton href={site.mailFormUrl} external variant="ghost">

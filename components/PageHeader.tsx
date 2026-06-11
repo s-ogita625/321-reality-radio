@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Headphones } from "./Logo";
+import { JpText } from "./JpText";
 
 /** 各下層ページ共通のグラデーションヘッダー */
 export function PageHeader({
@@ -25,9 +26,10 @@ export function PageHeader({
           {title}
         </h1>
         {description && (
-          <p className="mt-4 text-white/90 text-sm sm:text-base max-w-xl mx-auto">
-            {description}
-          </p>
+          <JpText
+            text={description}
+            className="mt-4 text-white/90 text-sm sm:text-base max-w-xl mx-auto"
+          />
         )}
       </div>
       {/* 下端カーブ */}
