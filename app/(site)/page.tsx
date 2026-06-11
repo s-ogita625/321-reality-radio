@@ -259,6 +259,20 @@ export default async function Home() {
                 </GradButton>
               </div>
             )}
+
+            {/* Vライバー募集 CTA */}
+            <div className="mt-8 pt-8 border-t border-white/20">
+              <p className="text-white/90 text-sm sm:text-base mb-4">
+                REALITYでVライバーデビューしてみませんか？✨
+              </p>
+              <GradButton
+                href="https://liff-gateway.lineml.jp/landing?follow=%40234pcbne&lp=jKK2xG&liff_id=2002363483-VqGOv5m2"
+                external
+                variant="ghost"
+              >
+                🎤 Vライバーになりたい方はこちら
+              </GradButton>
+            </div>
           </div>
         </div>
       </section>
