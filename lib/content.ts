@@ -83,6 +83,7 @@ export type SiteSettings = {
   nameEn: string;
   tagline: string;
   description: string;
+  about: string;
   company: string;
   regularSlot: string;
   platform: string;
@@ -96,6 +97,7 @@ const seedSettings: SiteSettings = {
   nameEn: seedSite.nameEn,
   tagline: seedSite.tagline,
   description: seedSite.description,
+  about: seedSite.about,
   company: seedSite.company,
   regularSlot: seedSite.regularSlot,
   platform: seedSite.platform,
@@ -168,6 +170,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       name: (data.name as string) ?? seedSettings.name,
       tagline: (data.tagline as string) ?? seedSettings.tagline,
       description: (data.description as string) ?? seedSettings.description,
+      about: (data.about as string) ?? seedSettings.about,
       company: (data.company as string) ?? seedSettings.company,
       regularSlot: (data.regular_slot as string) ?? seedSettings.regularSlot,
       platform: (data.platform as string) ?? seedSettings.platform,

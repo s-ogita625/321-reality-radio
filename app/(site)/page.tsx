@@ -108,9 +108,35 @@ export default async function Home() {
         <div className="h-10 sm:h-16 bg-[var(--cream)] [clip-path:ellipse(75%_100%_at_50%_100%)] -mt-2" />
       </section>
 
+      {/* ===================== 321 REALITY ラジオとは？ ===================== */}
+      <section className="mx-auto max-w-5xl px-4 sm:px-6 -mt-2 sm:-mt-6 relative z-10">
+        <div className="relative rounded-[28px] overflow-hidden bg-soft border-2 border-white shadow-[var(--shadow-pop)]">
+          <div className="absolute inset-0 halftone-ink opacity-50" />
+          <Headphones className="absolute -right-5 -top-5 w-28 h-28 text-[var(--magenta)]/15 rotate-12" aria-hidden />
+          <RadioGlyph className="absolute -left-4 bottom-2 w-20 h-20 text-[var(--purple)]/15 -rotate-6" />
+          <div className="relative p-7 sm:p-12 text-center">
+            <span className="pill bg-white/80 text-[var(--magenta)] text-xs px-4 py-1.5 border border-[var(--magenta)]/20 shadow-sm font-[family-name:var(--font-latin)] tracking-[0.18em]">
+              ABOUT
+            </span>
+            <h2 className="mt-4 font-[family-name:var(--font-rounded)] font-black text-2xl sm:text-4xl leading-tight">
+              <span className="text-grad">321 REALITY ラジオ</span>
+              <span className="text-[var(--ink)]">とは？</span>
+            </h2>
+            <JpText
+              text={site.about}
+              className="mt-5 text-[var(--ink-soft)] text-sm sm:text-lg leading-loose max-w-2xl mx-auto font-medium"
+            />
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+              <GradButton href="/schedule">📻 放送予定を見る</GradButton>
+              <GradButton href="/members" variant="ghost">パーソナリティ紹介</GradButton>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ===================== 次回放送 ===================== */}
       {next && (
-        <section className="mx-auto max-w-6xl px-4 sm:px-6 -mt-2">
+        <section className="mx-auto max-w-6xl px-4 sm:px-6 mt-16">
           <div className="grad-border p-1 shadow-[var(--shadow-pop)]">
             <div className="rounded-[20px] bg-white p-5 sm:p-7 flex flex-col md:flex-row gap-6 items-center">
               <div className="w-full md:w-2/5">

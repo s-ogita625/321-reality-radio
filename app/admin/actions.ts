@@ -189,6 +189,7 @@ export async function saveSettings(formData: FormData) {
     name: str(formData.get("name")),
     tagline: str(formData.get("tagline")),
     description: str(formData.get("description")),
+    about: str(formData.get("about")),
     company: str(formData.get("company")),
     regular_slot: str(formData.get("regular_slot")),
     platform: str(formData.get("platform")) || "REALITY",

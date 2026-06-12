@@ -50,8 +50,11 @@ export default async function AdminSettings({
             <Field label="キャッチコピー">
               <input name="tagline" defaultValue={s.tagline} className={inputClass} />
             </Field>
-            <Field label="番組概要">
-              <textarea name="description" defaultValue={s.description} rows={3} className={inputClass} />
+            <Field label="番組概要（フッターに表示）" hint="改行した位置で折り返されます">
+              <textarea name="description" defaultValue={s.description} rows={4} className={inputClass} />
+            </Field>
+            <Field label="「321 REALITY ラジオとは？」紹介文（トップ最上部）" hint="改行した位置で折り返されます">
+              <textarea name="about" defaultValue={s.about} rows={4} className={inputClass} />
             </Field>
             <div className="grid sm:grid-cols-2 gap-3">
               <Field label="放送枠" hint="例: 毎週金曜 21:00 - 22:00">
