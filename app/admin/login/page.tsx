@@ -18,9 +18,14 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    // ID入力（例: 321.inc）は内部のメール形式に変換。メールがそのまま入力された場合はそのまま使用。
+    const loginEmail = email.includes("@") ? email.trim() : `${email.trim()}@321.inc`;
+    const { error } = await supabase.auth.signInWithPassword({
+      email: loginEmail,
+      password,
+    });
     if (error) {
-      setError("ログインに失敗しました。メールアドレスとパスワードをご確認ください。");
+      setError("ログインに失敗しました。IDとパスワードをご確認ください。");
       setLoading(false);
       return;
     }
@@ -55,15 +60,18 @@ export default function LoginPage() {
 
         <label className="block mb-3">
           <span className="block text-xs font-bold text-[var(--ink)] mb-1">
-            メールアドレス
+            ID
           </span>
           <input
-            type="email"
+            type="text"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full rounded-lg border border-[var(--ink-soft)]/25 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--magenta)]/40"
-            placeholder="you@321.inc"
+            placeholder="321.inc"
           />
         </label>
         <label className="block mb-5">
@@ -89,8 +97,7 @@ export default function LoginPage() {
         </button>
 
         <p className="mt-5 text-[11px] text-[var(--ink-soft)] text-center leading-relaxed">
-          アカウントは Supabase ダッシュボードの Authentication →
-          Users から発行してください。
+          発行された ID とパスワードでログインしてください。
         </p>
         <Link
           href="/"
