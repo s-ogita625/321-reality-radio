@@ -59,15 +59,6 @@ export default async function Home() {
               <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
               {site.regularSlot} ｜ {site.platform}
             </p>
-
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <GradButton href="/schedule" variant="ghost">
-                📻 放送予定を見る
-              </GradButton>
-              <GradButton href="/archives" variant="ghost">
-                ▶ アーカイブを観る
-              </GradButton>
-            </div>
           </div>
 
           {/* 4人のキャラクター（バナー再現） */}
@@ -128,7 +119,7 @@ export default async function Home() {
             />
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
               <GradButton href="/schedule">📻 放送予定を見る</GradButton>
-              <GradButton href="/members" variant="ghost">パーソナリティ紹介</GradButton>
+              <GradButton href="/archives" variant="ghost">▶ アーカイブを観る</GradButton>
             </div>
           </div>
         </div>
