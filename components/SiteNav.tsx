@@ -11,6 +11,7 @@ const NAV = [
   { href: "/schedule", label: "放送予定" },
   { href: "/archives", label: "アーカイブ" },
   { href: "/members", label: "MC紹介" },
+  { href: "/posts", label: "投稿" },
 ];
 
 type Social = { label: string; url: string };

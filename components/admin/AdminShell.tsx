@@ -9,6 +9,7 @@ const TABS = [
   { href: "/admin/archives", label: "アーカイブ" },
   { href: "/admin/guests", label: "ゲスト" },
   { href: "/admin/members", label: "MC紹介" },
+  { href: "/admin/posts", label: "X投稿" },
   { href: "/admin/settings", label: "リンク・設定" },
 ];
 

@@ -64,6 +64,18 @@ export type Broadcast = {
   status: BroadcastStatus;
 };
 
+/** X（旧Twitter）投稿（手動キュレーション） */
+export type XPost = {
+  /** 一意なID */
+  id: string;
+  /** 投稿のURL（例: https://x.com/xxx/status/123...） */
+  url: string;
+  /** メモ（管理用・任意） */
+  note?: string;
+  /** 表示順（小さいほど先頭） */
+  sortOrder: number;
+};
+
 /** 過去ゲスト */
 export type Guest = {
   /** 一意な ID（例: "guest-001"） */

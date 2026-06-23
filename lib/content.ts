@@ -1,7 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { createPublicClient, isSupabaseConfigured } from "@/lib/supabase/public";
-import type { Broadcast, Archive, Guest, Member } from "@/data/types";
+import type { Broadcast, Archive, Guest, Member, XPost } from "@/data/types";
 import { broadcasts as seedBroadcasts } from "@/data/schedule";
 import { archives as seedArchives } from "@/data/archives";
 import { guests as seedGuests } from "@/data/guests";
@@ -157,6 +157,27 @@ export const getMembers = cache(async (): Promise<Member[]> => {
 
 export async function getMemberBySlug(slug: string): Promise<Member | undefined> {
   return (await getMembers()).find((m) => m.slug === slug);
+}
+
+export async function getXPosts(): Promise<XPost[]> {
+  if (!isSupabaseConfigured()) return [];
+  try {
+    const sb = createPublicClient();
+    const { data, error } = await sb
+      .from("x_posts")
+      .select("*")
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: false });
+    if (error || !data) return [];
+    return data.map((r: Row) => ({
+      id: String(r.id),
+      url: (r.url as string) ?? "",
+      note: (r.note as string) ?? undefined,
+      sortOrder: (r.sort_order as number) ?? 0,
+    }));
+  } catch {
+    return [];
+  }
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {

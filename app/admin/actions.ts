@@ -251,6 +251,37 @@ export async function deleteMember(formData: FormData) {
   redirect("/admin/members?deleted=1");
 }
 
+// ====================== X（旧Twitter）投稿 ======================
+
+export async function saveXPost(formData: FormData) {
+  const sb = await createClient();
+  const url = str(formData.get("url"));
+  if (!/^https?:\/\/(x\.com|twitter\.com)\/.+\/status\/\d+/.test(url)) {
+    throw new Error(
+      "X(旧Twitter)の投稿URLを入力してください（例: https://x.com/ユーザー名/status/数字...）",
+    );
+  }
+  const row = {
+    id: str(formData.get("id")) || crypto.randomUUID(),
+    url,
+    note: strOrNull(formData.get("note")),
+    sort_order: Number(str(formData.get("sort_order"))) || 0,
+  };
+  const { error } = await sb.from("x_posts").upsert(row);
+  if (error) throw new Error(error.message);
+  revalidateAll();
+  redirect("/admin/posts?saved=1");
+}
+
+export async function deleteXPost(formData: FormData) {
+  const sb = await createClient();
+  const id = str(formData.get("id"));
+  const { error } = await sb.from("x_posts").delete().eq("id", id);
+  if (error) throw new Error(error.message);
+  revalidateAll();
+  redirect("/admin/posts?deleted=1");
+}
+
 // ====================== 認証 ======================
 
 export async function signOut() {

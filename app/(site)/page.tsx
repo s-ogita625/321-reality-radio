@@ -1,8 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
-import { getBroadcasts, getArchives, getSiteSettings, getMembers } from "@/lib/content";
+import { getBroadcasts, getArchives, getSiteSettings, getMembers, getXPosts } from "@/lib/content";
 import { RECRUIT_URL } from "@/data/site";
 import { JpText } from "@/components/JpText";
+import { XEmbeds } from "@/components/XEmbeds";
 import { Headphones } from "@/components/Logo";
 import {
   SectionTitle,
@@ -17,11 +18,12 @@ import {
 export const revalidate = 60;
 
 export default async function Home() {
-  const [broadcasts, archives, site, members] = await Promise.all([
+  const [broadcasts, archives, site, members, xposts] = await Promise.all([
     getBroadcasts(),
     getArchives(),
     getSiteSettings(),
     getMembers(),
+    getXPosts(),
   ]);
   // 直近の放送予定（upcoming/live のうち日付が一番近いもの）
   const next = [...broadcasts]
@@ -259,6 +261,24 @@ export default async function Home() {
           ))}
         </div>
       </section>
+
+      {/* ===================== #321REALITYラジオ 投稿 ===================== */}
+      {xposts.length > 0 && (
+        <section className="mx-auto max-w-6xl px-4 sm:px-6 mt-24">
+          <div className="flex items-end justify-between gap-4 flex-wrap">
+            <SectionTitle label="#321REALITYラジオ" title="みんなの投稿" />
+            <Link
+              href="/posts"
+              className="text-sm font-bold text-[var(--magenta)] hover:underline whitespace-nowrap"
+            >
+              すべて見る →
+            </Link>
+          </div>
+          <div className="mt-8">
+            <XEmbeds urls={xposts.slice(0, 3).map((p) => p.url)} />
+          </div>
+        </section>
+      )}
 
       {/* ===================== お便り CTA ===================== */}
       <section id="otayori-cta" className="mx-auto max-w-6xl px-4 sm:px-6 mt-24 scroll-mt-20">
