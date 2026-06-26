@@ -275,7 +275,7 @@ export default async function Home() {
             </Link>
           </div>
           <div className="mt-8">
-            <XEmbeds posts={xposts.slice(0, 3)} />
+            <XEmbeds posts={xposts.slice(0, 3)} carousel />
           </div>
         </section>
       )}
