@@ -65,11 +65,19 @@ export function XEmbeds({ posts }: { posts: Post[] }) {
   }
 
   return (
-    <div ref={ref} className="columns-1 sm:columns-2 lg:columns-3 gap-5">
+    <div
+      ref={ref}
+      className={
+        // スマホ: 横スワイプのカルーセル / PC: マソンリー段組み
+        "flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 " +
+        "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden " +
+        "sm:mx-0 sm:px-0 sm:pb-0 sm:gap-5 sm:block sm:overflow-visible sm:columns-2 lg:columns-3"
+      }
+    >
       {posts.map((p, i) => (
         <div
           key={`${p.url}-${i}`}
-          className="mb-5 break-inside-avoid rounded-2xl bg-white shadow-[var(--shadow-pop)] overflow-hidden"
+          className="snap-center shrink-0 w-[82vw] max-w-[340px] mb-0 sm:w-auto sm:max-w-none sm:mb-5 sm:break-inside-avoid rounded-2xl bg-white shadow-[var(--shadow-pop)] overflow-hidden"
         >
           {/* 埋め込み本体 */}
           <div
