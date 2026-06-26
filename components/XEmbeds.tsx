@@ -11,13 +11,24 @@ declare global {
 
 const WIDGETS_SRC = "https://platform.twitter.com/widgets.js";
 
+type Post = { url: string; full?: boolean };
+
+function XIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
+
 /**
  * X（旧Twitter）の投稿を公式埋め込みで表示する。
- * 投稿は文章量・画像・引用などで高さがバラつくため、
- * 「高さ固定カード」に収めて見た目を統一し、はみ出す分は
- * 下部のグラデーションでフェード＋「Xで投稿を見る」リンクで全文確認できる。
+ * - full=false: 高さ固定カード（440px）に収め、はみ出しはフェード（見た目を統一）。
+ * - full=true : このサイト上で全文を表示（高さ自由）。
+ * いずれも内容とは別に「Xで見る」ボタンを独立配置。
+ * 高さがバラついてもマソンリー（段組み）で隙間なく並ぶ。
  */
-export function XEmbeds({ urls }: { urls: string[] }) {
+export function XEmbeds({ posts }: { posts: Post[] }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -41,9 +52,9 @@ export function XEmbeds({ urls }: { urls: string[] }) {
       load();
     }
     return () => script?.removeEventListener("load", load);
-  }, [urls]);
+  }, [posts]);
 
-  if (urls.length === 0) {
+  if (posts.length === 0) {
     return (
       <div className="rounded-3xl bg-white/70 border border-[var(--magenta)]/15 shadow-sm p-10 text-center">
         <p className="text-[var(--ink-soft)] text-sm">
@@ -54,36 +65,44 @@ export function XEmbeds({ urls }: { urls: string[] }) {
   }
 
   return (
-    <div
-      ref={ref}
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch"
-    >
-      {urls.map((url, i) => (
+    <div ref={ref} className="columns-1 sm:columns-2 lg:columns-3 gap-5">
+      {posts.map((p, i) => (
         <div
-          key={`${url}-${i}`}
-          className="flex flex-col h-[440px] rounded-2xl bg-white shadow-[var(--shadow-pop)] overflow-hidden"
+          key={`${p.url}-${i}`}
+          className="mb-5 break-inside-avoid rounded-2xl bg-white shadow-[var(--shadow-pop)] overflow-hidden"
         >
-          {/* 埋め込み本体（高さ固定・はみ出しは隠す） */}
-          <div className="relative flex-1 overflow-hidden px-2 pt-2">
+          {/* 埋め込み本体 */}
+          <div
+            className={
+              p.full
+                ? "relative px-2 pt-2"
+                : "relative px-2 pt-2 h-[440px] overflow-hidden"
+            }
+          >
             <blockquote
               className="twitter-tweet !m-0 !w-full"
               data-dnt="true"
               data-conversation="none"
             >
-              <a href={url}></a>
+              <a href={p.url}></a>
             </blockquote>
-            {/* 下部フェード */}
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-white via-white/80 to-transparent" />
+            {!p.full && (
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-white via-white/80 to-transparent" />
+            )}
           </div>
-          {/* フッターリンク（全文はXで） */}
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="shrink-0 border-t border-[var(--ink-soft)]/10 text-center py-2.5 text-xs font-bold text-[var(--magenta)] hover:bg-[var(--magenta)]/5 transition-colors"
-          >
-            X で投稿を見る ↗
-          </a>
+
+          {/* Xで見るボタン（内容とは独立） */}
+          <div className="p-3 border-t border-[var(--ink-soft)]/10">
+            <a
+              href={p.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-1.5 rounded-full bg-black text-white text-xs font-bold py-2.5 hover:opacity-85 transition-opacity"
+            >
+              <XIcon className="w-3.5 h-3.5" />
+              ポストをXで見る
+            </a>
+          </div>
         </div>
       ))}
     </div>

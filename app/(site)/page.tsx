@@ -275,7 +275,7 @@ export default async function Home() {
             </Link>
           </div>
           <div className="mt-8">
-            <XEmbeds urls={xposts.slice(0, 3).map((p) => p.url)} />
+            <XEmbeds posts={xposts.slice(0, 3)} />
           </div>
         </section>
       )}

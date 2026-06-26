@@ -265,6 +265,7 @@ export async function saveXPost(formData: FormData) {
     id: str(formData.get("id")) || crypto.randomUUID(),
     url,
     note: strOrNull(formData.get("note")),
+    show_full: !!formData.get("show_full"),
     sort_order: Number(str(formData.get("sort_order"))) || 0,
   };
   const { error } = await sb.from("x_posts").upsert(row);

@@ -72,6 +72,8 @@ export type XPost = {
   url: string;
   /** メモ（管理用・任意） */
   note?: string;
+  /** このサイト上で全文表示するか（true=省略せず全部表示） */
+  full: boolean;
   /** 表示順（小さいほど先頭） */
   sortOrder: number;
 };

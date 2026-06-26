@@ -173,6 +173,7 @@ export async function getXPosts(): Promise<XPost[]> {
       id: String(r.id),
       url: (r.url as string) ?? "",
       note: (r.note as string) ?? undefined,
+      full: Boolean(r.show_full),
       sortOrder: (r.sort_order as number) ?? 0,
     }));
   } catch {

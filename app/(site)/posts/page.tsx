@@ -16,7 +16,7 @@ export default async function PostsPage() {
         description="Xでの #321REALITYラジオ の投稿をピックアップ。番組への感想・お便りはハッシュタグをつけて投稿してね！"
       />
       <section className="mx-auto max-w-6xl px-4 sm:px-6 mt-12 sm:mt-16 mb-24">
-        <XEmbeds urls={posts.map((p) => p.url)} />
+        <XEmbeds posts={posts} />
       </section>
     </>
   );

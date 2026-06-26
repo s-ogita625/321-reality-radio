@@ -45,6 +45,22 @@ function PostForm({ p }: { p?: XPost }) {
           </Field>
         </div>
       </div>
+      <label className="flex items-start gap-2.5 rounded-lg bg-[var(--cream)] px-3 py-2.5 cursor-pointer">
+        <input
+          type="checkbox"
+          name="show_full"
+          value="1"
+          defaultChecked={p?.full ?? false}
+          className="mt-0.5 w-4 h-4 accent-[var(--magenta)]"
+        />
+        <span className="text-xs text-[var(--ink)] leading-relaxed">
+          <span className="font-bold">このサイトで全文を表示する</span>
+          <br />
+          <span className="text-[var(--ink-soft)]">
+            OFF（標準）= 高さ統一カードで表示し、長い投稿は省略。ON = 省略せず全文を表示します。
+          </span>
+        </span>
+      </label>
       <div className="pt-1">
         <PrimaryButton>{p ? "更新する" : "追加する"}</PrimaryButton>
       </div>
