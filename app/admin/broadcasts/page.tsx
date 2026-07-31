@@ -11,7 +11,7 @@ import {
   DangerButton,
   SectionHeading,
 } from "@/components/admin/fields";
-import { saveBroadcast, deleteBroadcast, archiveBroadcast } from "@/app/admin/actions";
+import { saveBroadcast, deleteBroadcast, archiveBroadcast, toggleBroadcastPublished } from "@/app/admin/actions";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 
 function BroadcastForm({ b, slugHint }: { b?: Broadcast; slugHint: string }) {
@@ -69,6 +69,21 @@ function BroadcastForm({ b, slugHint }: { b?: Broadcast; slugHint: string }) {
       <Field label="概要">
         <textarea name="description" defaultValue={b?.description} rows={2} className={inputClass} />
       </Field>
+      <label className="flex items-start gap-2.5 rounded-lg bg-[var(--cream)] px-3 py-2.5 cursor-pointer">
+        <input
+          type="checkbox"
+          name="published"
+          value="1"
+          defaultChecked={b ? b.published !== false : true}
+          className="mt-0.5 w-4 h-4 accent-[var(--magenta)]"
+        />
+        <span className="text-xs text-[var(--ink)] leading-relaxed">
+          <span className="font-bold">サイトに公開する</span>
+          <span className="ml-2 text-[var(--ink-soft)]">
+            OFFにすると、データは残したまま公開サイトから非表示になります。
+          </span>
+        </span>
+      </label>
       <div className="flex items-center gap-3 pt-1">
         <PrimaryButton>{b ? "更新する" : "追加する"}</PrimaryButton>
       </div>
@@ -89,7 +104,7 @@ export default async function AdminBroadcasts({
   if (!user) redirect("/admin/login");
 
   const sp = await searchParams;
-  const [blist, mem] = await Promise.all([getBroadcasts(), getMembers()]);
+  const [blist, mem] = await Promise.all([getBroadcasts(true), getMembers()]);
   const list = [...blist].sort((a, b) => a.date.localeCompare(b.date));
   const slugHint = `MCの slug: ${mem.map((m: Member) => `${m.slug}(${m.name})`).join(" / ")}`;
 
@@ -115,6 +130,11 @@ export default async function AdminBroadcasts({
               }`}>
                 {b.status === "ended" ? "終了" : b.status === "live" ? "LIVE" : "予定"}
               </span>
+              {b.published === false && (
+                <span className="pill text-[10px] px-2 py-1 bg-amber-100 text-amber-700 border border-amber-200">
+                  非公開
+                </span>
+              )}
               <span className="text-xs text-[var(--ink-soft)] font-bold tabular-nums">{b.date}</span>
               <span className="flex-1 text-sm font-bold text-[var(--ink)] truncate">
                 {b.episode && <span className="text-[var(--magenta)] mr-1">{b.episode}</span>}
@@ -125,6 +145,19 @@ export default async function AdminBroadcasts({
             <div className="px-5 pb-5 pt-1 border-t border-[var(--ink-soft)]/10">
               <BroadcastForm b={b} slugHint={slugHint} />
               <div className="mt-4 pt-4 border-t border-dashed border-[var(--ink-soft)]/20 flex flex-wrap items-center gap-3">
+                <form action={toggleBroadcastPublished}>
+                  <input type="hidden" name="id" value={b.id} />
+                  <input type="hidden" name="next" value={b.published === false ? "1" : "0"} />
+                  <button
+                    className={`pill px-4 py-2 text-xs font-bold border transition ${
+                      b.published === false
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+                        : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
+                    }`}
+                  >
+                    {b.published === false ? "👁 公開する" : "🚫 非公開にする"}
+                  </button>
+                </form>
                 <form action={archiveBroadcast}>
                   <input type="hidden" name="id" value={b.id} />
                   <button className="pill bg-[var(--magenta)]/10 text-[var(--magenta)] border border-[var(--magenta)]/30 px-4 py-2 text-xs font-bold hover:bg-[var(--magenta)]/20 transition">

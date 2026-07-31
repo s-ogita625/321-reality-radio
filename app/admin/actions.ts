@@ -52,8 +52,20 @@ export async function saveBroadcast(formData: FormData) {
     url: strOrNull(formData.get("url")),
     description: strOrNull(formData.get("description")),
     status: str(formData.get("status")) || "upcoming",
+    published: !!formData.get("published"),
   };
   const { error } = await sb.from("broadcasts").upsert(row);
+  if (error) throw new Error(error.message);
+  revalidateAll();
+  redirect("/admin/broadcasts?saved=1");
+}
+
+/** 放送予定の公開/非公開をワンクリックで切り替える */
+export async function toggleBroadcastPublished(formData: FormData) {
+  const sb = await createClient();
+  const id = str(formData.get("id"));
+  const next = str(formData.get("next")) === "1"; // 切替後の値
+  const { error } = await sb.from("broadcasts").update({ published: next }).eq("id", id);
   if (error) throw new Error(error.message);
   revalidateAll();
   redirect("/admin/broadcasts?saved=1");

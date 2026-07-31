@@ -62,6 +62,8 @@ export type Broadcast = {
   description?: string;
   /** ステータス。upcoming=放送予定 / live=配信中 / ended=放送終了 */
   status: BroadcastStatus;
+  /** 公開状態。false=サイト上で非表示（データは保持）。未指定は公開扱い */
+  published?: boolean;
 };
 
 /** X（旧Twitter）投稿（手動キュレーション） */

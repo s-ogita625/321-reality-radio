@@ -31,6 +31,7 @@ function rowToBroadcast(r: Row): Broadcast {
     url: (r.url as string) ?? undefined,
     description: (r.description as string) ?? undefined,
     status: (r.status as Broadcast["status"]) ?? "upcoming",
+    published: r.published !== false,
   };
 }
 
@@ -106,11 +107,14 @@ const seedSettings: SiteSettings = {
   socials: [...seedSite.socials],
 };
 
-export async function getBroadcasts(): Promise<Broadcast[]> {
+export async function getBroadcasts(includeUnpublished = false): Promise<Broadcast[]> {
   if (!isSupabaseConfigured()) return seedBroadcasts;
   try {
     const sb = createPublicClient();
-    const { data, error } = await sb.from("broadcasts").select("*").order("date", { ascending: true });
+    let query = sb.from("broadcasts").select("*").order("date", { ascending: true });
+    // 公開サイトでは非公開(published=false)を除外。管理画面は全件取得。
+    if (!includeUnpublished) query = query.eq("published", true);
+    const { data, error } = await query;
     if (error || !data) return seedBroadcasts;
     return data.map(rowToBroadcast);
   } catch {
